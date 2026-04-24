@@ -5,18 +5,29 @@ on:
     - cron: "0 0 * * *"
   workflow_dispatch:
 
+# Esta seção dá permissão para o robô do GitHub escrever no seu repositório
+permissions:
+  contents: write
+
 jobs:
   generate:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: Platane/snk@v3
+      # Primeiro, baixa o código do seu repositório para o servidor do GitHub
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Gera a animação da cobrinha
+      - name: Generate Snake
+        uses: Platane/snk@v3
         with:
           github_user_name: mast3r6yy
           outputs: |
             dist/snake.svg
 
-      - uses: crazy-max/ghaction-github-pages@v3
+      # Sobe o arquivo gerado para a branch 'output'
+      - name: Deploy to Output Branch
+        uses: crazy-max/ghaction-github-pages@v3
         with:
           target_branch: output
           build_dir: dist
